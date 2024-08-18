@@ -7,6 +7,9 @@ import com.sparta.spirngfirsthomework.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor //
 public class ScheduleServiceImpl implements ScheduleService{
@@ -26,5 +29,10 @@ public class ScheduleServiceImpl implements ScheduleService{
     public ScheduleResponseDto getSchedule(Long id) {
         Schedule schedule = scheduleRepository.findById(id);
         return ScheduleResponseDto.from(schedule); //레파지토리에서 예외처리를 해줬기 때문에 여기서도 예외처리를 해줄 필요는 없음
+    }
+
+    @Override
+    public List<Schedule> getSchedulesByNameAndModDate(String name, LocalDate modDate) {
+        return scheduleRepository.findByNameAndModDate(name, modDate);
     }
 }

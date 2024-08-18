@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.List;
+
 
 @RestController//url 지정할 수있게 만들어줌
 @RequiredArgsConstructor
@@ -30,6 +33,16 @@ public class ScheduleController {
         }
         log.info("Get by Id: {}",id);
         return ResponseEntity.ok(scheduleServiceImpl.getSchedule(id));
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Schedule>> getByNameAndModDate(@RequestParam(required = false) String name, @RequestParam(required = false)LocalDate modDate) {
+        List<Schedule> schedules = scheduleServiceImpl.getSchedulesByNameAndModDate(name, modDate);
+        log.info("Get List by name: {}, modDate: {}",name,modDate);
+        if(schedules.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(schedules);
     }
 
 

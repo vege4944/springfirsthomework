@@ -7,13 +7,17 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.swing.plaf.basic.BasicTreeUI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Repository //최종은 jpa 를 할거라 완벽히 이해하지 않아도 됨
@@ -81,6 +85,23 @@ public class ScheduleRepository {
         catch (EmptyResultDataAccessException e){
             throw new RuntimeException("일정이 없습니다.");
         }
+    }
+    public List<Schedule> findByNameAndModDate(String name, LocalDate modDate) {
+        StringBuilder sql = new StringBuilder("SELECT * FROM schedule WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
+        if (name != null) {
+            sql.append(" AND name = ?");
+            params.add(name);
+        }
+        if (modDate != null) {
+            LocalDateTime startOfDay = modDate.atStartOfDay();
+            sql.append(" AND modDate >= ? AND modDate < ?");
+            params.add(Timestamp.valueOf(startOfDay));
+            params.add(Timestamp.valueOf(startOfDay.plusDays(1)));
+        }
+        sql.append("ORDER BY modDate DESC");
+
+        return jdbcTemplate.query(sql.toString(),new ScheduleRowMapper(),params.toArray());
     }
 
     private static class ScheduleRowMapper implements RowMapper<Schedule> {
