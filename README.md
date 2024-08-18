@@ -1,12 +1,13 @@
 
-//Schedule
+#schedule
 
-//ERD 이미지
+#ERD 이미지
 
 ![scheduleERD](https://github.com/user-attachments/assets/767874f9-6d5a-452a-82a6-306e91e2d3fb)
 
 
-//ERD 설명
+#SQL 코드
+
 create table schedule
 (
 id       bigint auto_increment
