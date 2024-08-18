@@ -1,6 +1,7 @@
 package com.sparta.spirngfirsthomework.repository;
 
 import com.sparta.spirngfirsthomework.entity.Schedule;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -11,6 +12,7 @@ import javax.swing.plaf.basic.BasicTreeUI;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -44,8 +46,8 @@ public class ScheduleRepository {
             ps.setString(1,schedule.getTask()); //entity에 getter를 써줬기 때문에 편리하게 레파지토리에 가져올 수 있었음
             ps.setString(2,schedule.getName());
             ps.setString(3,schedule.getPassword());
-            ps.setObject(4,schedule.getRegDate());
-            ps.setObject(5,schedule.getModDate());
+            ps.setObject(4,Timestamp.valueOf(currentTime));
+            ps.setObject(5,Timestamp.valueOf(currentTime));
             return ps;
         },keyHolder);
         //id 를 increment로 자동증가 하기로 설정 했으니 jdbc 서도 db 에 작성한거와 똑같이 자동으로 증가하게 만들어줘야 하니까
@@ -69,6 +71,16 @@ public class ScheduleRepository {
         // 직관적으로 값을 보여주기 위해 builder 를 ㅂㅎㅌㅎㅇ
         // 그러므로 Scheudle 타입으로 선언 해서 Return 해주기
 
+    }
+    public Schedule findById(Long id) {
+        String sql ="SELECT * FROM schedule WHERE id=?"; // 물음표는 id 값으로 찾겠다는 것
+        try { //id 가 null 일 경우를 위해서 예외처리를 해야함 -> try catch 문
+            //try: 시도를 하고 없으면 catch로 새로운 예외를 던져서 일정이 없다는걸 보여줌
+            return jdbcTemplate.queryForObject(sql, new ScheduleRowMapper(), id);
+        }
+        catch (EmptyResultDataAccessException e){
+            throw new RuntimeException("일정이 없습니다.");
+        }
     }
 
     private static class ScheduleRowMapper implements RowMapper<Schedule> {
