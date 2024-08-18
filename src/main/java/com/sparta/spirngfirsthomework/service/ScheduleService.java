@@ -13,4 +13,8 @@ public interface ScheduleService {
     ScheduleResponseDto getSchedule(Long id);
 
     List<Schedule> getSchedulesByNameAndModDate(String name, LocalDate modDate); //직관적으로 보기위해 이렇게 이름을 지음
+
+    Schedule updateScheduleByTaskAndName(Long id, ScheduleRequestDto scheduleRequestDto);
+
+    void deleteScheduleById(Long id);
 }

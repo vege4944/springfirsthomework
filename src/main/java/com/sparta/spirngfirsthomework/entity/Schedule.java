@@ -1,5 +1,6 @@
 package com.sparta.spirngfirsthomework.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jdk.jfr.Timestamp;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +38,7 @@ public class Schedule {
 
     private String name; //담당자명
 
+    @JsonIgnore
     private String password; //비밀번호
 
     @Timestamp
